@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>古墳タロット | 古墳RPGタロット 全22枚</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Noto+Serif+JP:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:radial-gradient(ellipse at 50% 0%,#1a1005 0%,#0a0804 40%,#060503 100%);
+  min-height:100vh;
+  color:#d4b870;
+  font-family:'Noto Serif JP',serif;
+  overflow-x:hidden;
+}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0e0a04}
+::-webkit-scrollbar-thumb{background:#3a2c10}
+
+canvas#stars{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+#app{position:relative;z-index:1;}
+
+/* ヘッダー */
+header{
+  text-align:center;
+  padding:32px 16px 0;
+  border-bottom:1px solid #2a2010;
+}
+.header-sub{font-family:'Cinzel',serif;font-size:10px;letter-spacing:6px;color:#6a5020;margin-bottom:6px;}
+.header-title{font-family:'Noto Serif JP',serif;font-size:26px;color:#d4b870;letter-spacing:4px;margin-bottom:4px;text-shadow:0 0 40px #c8a84433;}
+.header-en{font-family:'Cinzel',serif;font-size:9px;color:#4a3818;letter-spacing:5px;margin-bottom:20px;}
+nav{display:flex;justify-content:center;gap:0;}
+.nav-btn{
+  font-family:'Noto Serif JP',serif;font-size:12px;letter-spacing:1px;
+  color:#5a4828;background:transparent;border:none;
+  border-bottom:1px solid transparent;
+  padding:8px 20px;cursor:pointer;transition:all .2s;
+}
+.nav-btn.active{color:#d4b060;border-bottom:1px solid #c8a040;}
+.nav-btn:hover{color:#a08040;}
+
+/* メインコンテンツ */
+main{max-width:900px;margin:0 auto;padding:24px 16px;}
+
+/* ========== HOME ========== */
+#page-home{text-align:center;padding:40px 0;display:none;}
+#page-home.show{display:block;}
+.home-img-wrap{width:180px;margin:0 auto 32px;position:relative;}
+.home-img-wrap img{width:100%;border-radius:2px;box-shadow:0 20px 60px #00000088,0 0 40px #c8a84422;filter:brightness(.9) sepia(.1);}
+.home-img-wrap::after{content:'';position:absolute;inset:0;background:linear-gradient(transparent 60%,#0a0804);border-radius:2px;}
+.home-desc{font-family:'Noto Serif JP',serif;font-size:14px;color:#8a7048;line-height:2.4;max-width:400px;margin:0 auto 32px;letter-spacing:1px;}
+.home-credit{border-top:1px solid #2a2010;padding-top:24px;margin-bottom:24px;}
+.home-credit-label{font-family:'Cinzel',serif;font-size:9px;color:#4a3818;letter-spacing:3px;margin-bottom:12px;}
+.home-credit-text{font-family:'Noto Serif JP',serif;font-size:11px;color:#5a4828;line-height:2.2;}
+.home-btn{
+  font-family:'Noto Serif JP',serif;font-size:14px;letter-spacing:3px;
+  color:#0a0804;
+  background:linear-gradient(135deg,#c8a040,#8a6820);
+  border:none;border-radius:2px;
+  padding:14px 48px;cursor:pointer;
+  box-shadow:0 4px 20px #c8a04044;transition:all .2s;
+}
+.home-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px #c8a04066;}
+
+/* ========== ORACLE ========== */
+#page-oracle{text-align:center;display:none;}
+#page-oracle.show{display:block;}
+.oracle-lead{font-family:'Noto Serif JP',serif;font-size:13px;color:#6a5020;margin-bottom:32px;letter-spacing:2px;}
+.card-back{
+  width:180px;height:252px;margin:0 auto 32px;
+  background:linear-gradient(135deg,#1a1208,#2a1e08);
+  border:1px solid #5a4020;border-radius:4px;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 40px #00000088;
+  cursor:pointer;transition:all .3s;position:relative;overflow:hidden;
+}
+.card-back:hover{box-shadow:0 16px 50px #c8a04044;transform:translateY(-4px);}
+.card-back-inner{position:absolute;inset:8px;border:1px solid #3a2c10;border-radius:2px;}
+.card-back-kofun{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:9px;color:#3a2c10;letter-spacing:4px;}
+.card-back-tarot{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:9px;color:#3a2c10;letter-spacing:4px;}
+.card-back-label{font-family:'Cinzel',serif;font-size:13px;color:#8a6830;letter-spacing:2px;transition:all .2s;z-index:1;}
+.card-back-label.drawing{font-size:10px;color:#4a3818;animation:pulse .8s infinite;}
+
+/* 履歴 */
+.history-label{font-family:'Cinzel',serif;font-size:9px;color:#4a3818;letter-spacing:3px;margin-bottom:12px;text-align:center;}
+.history-list{max-width:400px;margin:0 auto;}
+.history-item{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 12px;border:1px solid #2a2010;border-radius:2px;margin-bottom:6px;
+  cursor:pointer;transition:all .2s;
+}
+.history-item:hover{border-color:#5a4020;}
+.history-item.latest{background:#1a140899;}
+.history-thumb{width:32px;height:44px;object-fit:cover;border-radius:1px;opacity:.85;}
+.history-thumb.rev{transform:rotate(180deg);}
+.history-name{font-family:'Noto Serif JP',serif;font-size:13px;color:#c8a060;}
+.history-pos{font-family:'Cinzel',serif;font-size:8px;letter-spacing:2px;}
+.history-pos.upright{color:#4a6030;}
+.history-pos.reversed{color:#8a4040;}
+.history-time{margin-left:auto;font-family:'Cinzel',serif;font-size:8px;color:#3a2c10;}
+
+/* ========== GALLERY ========== */
+#page-gallery{display:none;}
+#page-gallery.show{display:block;}
+.gallery-lead{font-family:'Noto Serif JP',serif;font-size:12px;color:#4a3818;text-align:center;margin-bottom:20px;letter-spacing:2px;}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(110px,1fr));
+  gap:10px;
+}
+.gallery-card{
+  cursor:pointer;border:1px solid #5a4a2a;border-radius:4px;
+  overflow:hidden;
+  background:linear-gradient(160deg,#1a1208 0%,#0e0c06 100%);
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 2px 12px #00000066;
+}
+.gallery-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px #c8a84444;}
+.gallery-card-img{position:relative;padding-top:140%;background:#0e0c06;}
+.gallery-card-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.9;}
+.gallery-card-img-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,#0e0c06dd);padding:24px 8px 6px;}
+.gallery-card-roman{font-family:'Cinzel',serif;font-size:9px;color:#8a7040;letter-spacing:2px;}
+.gallery-card-text{padding:6px 8px 8px;text-align:center;}
+.gallery-card-name{font-family:'Noto Serif JP',serif;font-size:12px;color:#d4b870;letter-spacing:1px;}
+.gallery-card-en{font-family:'Cinzel',serif;font-size:8px;color:#6a5830;margin-top:2px;letter-spacing:1px;}
+
+/* ========== MODAL ========== */
+#modal-overlay{
+  position:fixed;inset:0;z-index:100;
+  background:rgba(5,3,0,.92);
+  display:none;align-items:center;justify-content:center;
+  padding:16px;backdrop-filter:blur(4px);
+}
+#modal-overlay.show{display:flex;}
+#modal-box{
+  width:100%;max-width:480px;
+  background:linear-gradient(170deg,#1c140a 0%,#0e0a04 100%);
+  border:1px solid #6a5020;border-radius:4px;
+  box-shadow:0 0 60px #c8a84422,inset 0 0 40px #00000044;
+  max-height:90vh;overflow-y:auto;
+  padding:0 0 24px;
+  animation:fadeIn .3s ease;
+}
+.modal-card-wrap{position:relative;width:100%;padding-top:130%;overflow:hidden;}
+.modal-card-img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  filter:brightness(.95) contrast(1.05);
+  transition:transform .5s cubic-bezier(.4,0,.2,1);
+  transform:scaleX(0);
+}
+.modal-card-img.flipped{transform:scaleX(1);}
+.modal-card-img.reversed-img{transform:scaleX(1) rotate(180deg);}
+.modal-card-overlay{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(transparent,#0e0a04);}
+.modal-card-roman{
+  position:absolute;top:12px;left:0;right:0;text-align:center;
+  font-family:'Cinzel',serif;font-size:13px;color:#c8a844cc;letter-spacing:4px;
+  text-shadow:0 0 20px #c8a84466;
+}
+.modal-rev-badge{
+  position:absolute;top:12px;right:12px;
+  background:#3a0808cc;border:1px solid #8a2020;border-radius:2px;
+  padding:2px 8px;font-family:'Noto Serif JP',serif;font-size:10px;color:#e05050;letter-spacing:1px;
+}
+.modal-body{padding:20px 24px 0;}
+.modal-name{text-align:center;margin-bottom:16px;}
+.modal-name-ja{font-family:'Noto Serif JP',serif;font-size:22px;color:#d4b870;letter-spacing:3px;}
+.modal-name-en{font-family:'Cinzel',serif;font-size:11px;color:#7a6030;letter-spacing:3px;margin-top:4px;}
+.modal-divider{border-top:1px solid #3a2c10;margin-bottom:16px;}
+.modal-desc{
+  font-family:'Noto Serif JP',serif;font-size:13px;line-height:2.1;
+  color:#b8a070;white-space:pre-wrap;min-height:80px;
+}
+.cursor{animation:blink .8s infinite;opacity:.6;}
+.modal-commands{margin-top:20px;}
+.modal-cmd-label{font-family:'Noto Serif JP',serif;font-size:11px;color:#6a5828;margin-bottom:10px;letter-spacing:1px;}
+.modal-cmd-list{display:flex;gap:8px;flex-wrap:wrap;}
+.modal-cmd{
+  font-family:'Noto Serif JP',serif;font-size:12px;color:#d4b060;
+  border:1px solid #5a4020;border-radius:2px;
+  padding:5px 12px;letter-spacing:1px;
+}
+.modal-oracle{margin-top:20px;padding:14px 16px;border-radius:3px;}
+.modal-oracle.upright{background:#0e1208;border:1px solid #2a4020;}
+.modal-oracle.reversed-oracle{background:#1a0808;border:1px solid #5a2020;}
+.modal-oracle-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;margin-bottom:8px;}
+.modal-oracle-label.upright{color:#4a7040;}
+.modal-oracle-label.reversed-oracle{color:#8a4040;}
+.modal-oracle-text{font-family:'Noto Serif JP',serif;font-size:14px;line-height:1.9;letter-spacing:1px;}
+.modal-oracle-text.upright{color:#80c060;}
+.modal-oracle-text.reversed-oracle{color:#d06060;}
+.modal-close{
+  display:block;width:calc(100% - 48px);margin:24px auto 0;
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:3px;
+  color:#6a5020;background:transparent;
+  border:1px solid #3a2c10;border-radius:2px;padding:10px;
+  cursor:pointer;transition:all .2s;
+}
+.modal-close:hover{border-color:#8a6030;color:#c8a050;}
+
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+</style>
+</head>
+<body>
+
+<canvas id="stars"></canvas>
+
+<div id="app">
+  <header>
+    <div class="header-sub">古墳RPGタロット</div>
+    <div class="header-title">古墳タロット</div>
+    <div class="header-en">KOFUN RPG TAROT · ALL 22 ARCANA</div>
+    <nav>
+      <button class="nav-btn active" data-page="home">▶ はじめに</button>
+      <button class="nav-btn" data-page="oracle">▶ カードを引く</button>
+      <button class="nav-btn" data-page="gallery">▶ 全22枚</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <div id="page-home" class="show">
+      <div class="home-img-wrap">
+        <img src="https://assets.st-note.com/img/1779450654-1Dj6bHLXvRtsJO2AmWhgYEpP.png" alt="愚者">
+      </div>
+      <div class="home-desc">
+        全22枚。大アルカナをすべて古墳世界に変換した。<br>
+        タロットとして読んでもいいし、<br>
+        どこかのRPGの攻略本として読んでもいい。
+      </div>
+      <div class="home-credit">
+        <div class="home-credit-label">CREDIT</div>
+        <div class="home-credit-text">
+          画像生成：ChatGPT（DALL-E）<br>
+          テキスト：Claude（Anthropic）<br>
+          編集・発行：無限納豆
+        </div>
+      </div>
+      <button class="home-btn" id="btn-start">▶ 古墳へ向かう</button>
+    </div>
+
+    <!-- ORACLE -->
+    <div id="page-oracle">
+      <div class="oracle-lead">古墳に問いかけよ</div>
+      <div class="card-back" id="draw-btn">
+        <div class="card-back-inner"></div>
+        <div class="card-back-kofun">KOFUN</div>
+        <div class="card-back-tarot">TAROT</div>
+        <div class="card-back-label" id="draw-label">▶ タップで引く</div>
+      </div>
+      <div id="history-section" style="display:none;">
+        <div class="history-label">HISTORY</div>
+        <div class="history-list" id="history-list"></div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div id="page-gallery">
+      <div class="gallery-lead">大アルカナ 全22枚</div>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal-box">
+    <div class="modal-card-wrap">
+      <img class="modal-card-img" id="modal-img" src="" alt="">
+      <div class="modal-card-overlay"></div>
+      <div class="modal-card-roman" id="modal-roman"></div>
+      <div class="modal-rev-badge" id="modal-rev-badge" style="display:none;">逆位置</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-name">
+        <div class="modal-name-ja" id="modal-name-ja"></div>
+        <div class="modal-name-en" id="modal-name-en"></div>
+      </div>
+      <div class="modal-divider"></div>
+      <div class="modal-desc" id="modal-desc"></div>
+      <div class="modal-commands" id="modal-commands" style="display:none;">
+        <div class="modal-cmd-label">〈このカードが出たら〉</div>
+        <div class="modal-cmd-list" id="modal-cmd-list"></div>
+      </div>
+      <div class="modal-oracle" id="modal-oracle" style="display:none;">
+        <div class="modal-oracle-label" id="modal-oracle-label"></div>
+        <div class="modal-oracle-text" id="modal-oracle-text"></div>
+      </div>
+      <button class="modal-close" id="modal-close">── CLOSE ──</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CARDS = [
+  {id:0,name:"愚者",nameEn:"THE FOOL",roman:"0",
+   image:"https://assets.st-note.com/img/1779450654-1Dj6bHLXvRtsJO2AmWhgYEpP.png",
+   desc:"夜明け前の古墳へ向かう若き巫者。持っているのは一本の杖と、名前のない衝動だけだ。\n\n何を探しているのかも、どこへ向かうのかも、彼はまだ知らない。知らないことが、出発の条件だった。",
+   commands:["すすむ","もどる","かんがえる"],
+   upright:"まだ何も決まっていない。それが最大の自由だ。",
+   reversed:"足が止まっている。古墳は待っている。"},
+  {id:1,name:"魔術師",nameEn:"THE MAGICIAN",roman:"I",
+   image:"https://assets.st-note.com/img/1779449222-reROVS9mIjay3UndB6tZGwLF.png",
+   desc:"「古墳の扉よ、開け。」\n\n石の祭壇に勾玉、銅鏡、鉄剣が並ぶ。巫者はすでに道具を持っている。足りないのは道具ではなく、唱える意志だ。",
+   commands:["となえる","まつ","もちものをみる"],
+   upright:"手の中にすでに答えがある。",
+   reversed:"道具を並べたまま、呪文を唱えていない。"},
+  {id:2,name:"女教皇",nameEn:"THE HIGH PRIESTESS",roman:"II",
+   image:"https://assets.st-note.com/img/1779449276-HybufEjBAM5Sl6LVZotP1Ti4.png",
+   desc:"古墳は、すべてを知っていた。\n\n石室の中で巫女は黙って座っている。月明かりが入口から差し込み、彼女の持つ巻物を照らす。答えはそこにある。しかし彼女は語らない。",
+   commands:["きく","よむ","もどる"],
+   upright:"答えはすでにある。静かに受け取れ。",
+   reversed:"知っていて、隠している。"},
+  {id:3,name:"女帝",nameEn:"THE EMPRESS",roman:"III",
+   image:"https://assets.st-note.com/img/1779449308-B4HhpzocEM6kvfF28PJV5UT9.png",
+   desc:"「大地は 彼女のものだった。」\n\n銅鏡と勾玉で作られた玉座。埴輪たちが足元にひれ伏す。古墳の斜面に蓮の花が咲いている。彼女は何も命じていない。ただそこにいるだけで、すべてが満ちる。",
+   commands:["ささげる","みる","はなす"],
+   upright:"豊かさはすでにここにある。",
+   reversed:"与えることを忘れている。"},
+  {id:4,name:"皇帝",nameEn:"THE EMPEROR",roman:"IV",
+   image:"https://assets.st-note.com/img/1779449373-OicKhS7RETGLHx651DBwnJvu.png",
+   desc:"古墳の頂上から、地平の果てまで古墳が続く。\n\n彼は鉄剣を垂直に立て、霧の谷を見下ろしている。埴輪の武人たちが背後に整列する。支配とは、この静けさのことだ。",
+   commands:["めいれいする","みおろす","まつ"],
+   upright:"秩序を作れ。あなたがその中心だ。",
+   reversed:"頂上にいるが、谷が見えていない。"},
+  {id:5,name:"法王",nameEn:"THE HIEROPHANT",roman:"V",
+   image:"https://assets.st-note.com/img/1779449408-K31QVr9ip4EbITny2CSMH6vB.png",
+   desc:"「古墳の神よ、我々に告げよ。」\n\n老いた祭司が銅鏡を翳す。しめ縄の向こうに闇がある。跪く者たちは答えを待っている。古墳は答えない。それが答えだ。",
+   commands:["きく","ひざまずく","となえる"],
+   upright:"伝統の中に道がある。",
+   reversed:"形だけが残り、意味が抜けている。"},
+  {id:6,name:"恋人",nameEn:"THE LOVERS",roman:"VI",
+   image:"https://assets.st-note.com/img/1779449438-fqW584nEmzxLK3ZouvTJFsYd.png",
+   desc:"「ふたりの間に、埴輪が立っていた。」\n\n古墳の頂で向かい合うふたり。夕焼けが桜の花びらを橙に染める。埴輪は腕を広げ、仲人のように立っている。愛の証人が土でできていても、誓いは本物だ。",
+   commands:["はなす","みつめる","うごかない"],
+   upright:"選ぶことが、始まりだ。",
+   reversed:"ふたりの間に、埴輪以外の何かが立っている。"},
+  {id:7,name:"戦車",nameEn:"THE CHARIOT",roman:"VII",
+   image:"https://assets.st-note.com/img/1779449472-dWFgz7ejxZokqipy4IK0nCJH.png",
+   desc:"「埴輪の馬が 夜明けを駆けた。」\n\n古墳の間の道を、戦車が突き進む。手綱を握る若者の目に迷いはない。埴輪たちが道の脇で見送っている。止まる理由など、最初からなかった。",
+   commands:["すすむ","はしる","とまる"],
+   upright:"今は走れ。考えるのは後でいい。",
+   reversed:"速さだけが先行し、方向を見失っている。"},
+  {id:8,name:"力",nameEn:"STRENGTH",roman:"VIII",
+   image:"https://assets.st-note.com/img/1779449502-ypPmen2vE4ZaVbut0jlW3O8q.png",
+   desc:"「力とは、静けさの中にある。」\n\n巫女は狛犬の頭にそっと手を置く。獣の目が琥珀色に光る。埴輪たちが円を作って見守っている。制したのではない。ただ、触れた。",
+   commands:["さわる","みつめる","いのる"],
+   upright:"力は押さえることではなく、寄り添うことだ。",
+   reversed:"恐れから目を背けている。"},
+  {id:9,name:"隠者",nameEn:"THE HERMIT",roman:"IX",
+   image:"https://assets.st-note.com/img/1779449533-erpY2sNXKn160kxFLZdtjuTb.png",
+   desc:"「ひとつの光が 闇を歩いていた。」\n\n古墳の原野を老人がひとりで歩く。ランタンが足元だけを照らす。隣に埴輪が一体、黙ってついてきている。孤独と孤立は違う。",
+   commands:["すすむ","てらす","やすむ"],
+   upright:"ひとりで歩く時間が、今は必要だ。",
+   reversed:"光を消して、立ち止まっている。"},
+  {id:10,name:"運命の輪",nameEn:"WHEEL OF FORTUNE",roman:"X",
+   image:"https://assets.st-note.com/img/1779449550-sKS4FM2PTIoOkQ1j7vu8Jaz0.png",
+   desc:"「鏡の中で 埴輪たちが巡っていた。」\n\n巨大な銅鏡が古墳の頂に横たわる。その面に刻まれた埴輪たちは、上る者と下る者に分かれて円を描く。空が渦巻いている。止められない。",
+   commands:["みる","ふれる","まわす"],
+   upright:"流れに乗れ。今は上昇の番だ。",
+   reversed:"輪は回っている。抵抗しても消耗するだけだ。"},
+  {id:11,name:"正義",nameEn:"JUSTICE",roman:"XI",
+   image:"https://assets.st-note.com/img/1779449596-tfRgGevdm7wYhz6usbPapOVX.png",
+   desc:"「古墳は 嘘をつかない。」\n\n石の玉座に座る女が、剣と天秤を持つ。天秤の両皿に勾玉が揺れる。冷たい月光が真上から落ちる。古墳はすべてを見ていた。",
+   commands:["はかる","さばく","はなす"],
+   upright:"正直に向き合え。答えはすでに出ている。",
+   reversed:"天秤が傾いたまま、目を逸らしている。"},
+  {id:12,name:"吊られた男",nameEn:"THE HANGED MAN",roman:"XII",
+   image:"https://assets.st-note.com/img/1779449622-WwafgKCxiMpLcr8DoZsT25QV.png",
+   desc:"「逆さまに見ると 古墳が笑っていた。」\n\n鳥居の横木から逆さに吊られた若者。表情は穏やかだ。勾玉と銅鏡が体の周りに浮かんでいる。埴輪たちが静かに見上げている。何かを手放したとき、別の何かが見える。",
+   commands:["みる","まつ","おろす"],
+   upright:"今は動かないことが正解だ。",
+   reversed:"吊られたまま、気づこうとしていない。"},
+  {id:13,name:"死神",nameEn:"DEATH",roman:"XIII",
+   image:"https://assets.st-note.com/img/1779449681-OSD2od8HL4qmbMQg3JjNkpZc.png",
+   desc:"「これは終わりではない、と 古墳は言った。」\n\n満月の下、死装束の骸骨が古墳の入口に立つ。倒れた埴輪たちが周囲に散らばる。しかし奥の燭台はまだ灯っている。古墳は何度でも、人を飲み込んで、また吐き出す。",
+   commands:["すすむ","にげる","いのる"],
+   upright:"終わりは変容だ。恐れるな。",
+   reversed:"変わることを拒み、腐っている。"},
+  {id:14,name:"節制",nameEn:"TEMPERANCE",roman:"XIV",
+   image:"https://assets.st-note.com/img/1779449725-OmEakpfXFZyYGHUL4VdbjBW8.png",
+   desc:"「注ぎ、受け取り、また注ぐ。」\n\nふたつの古墳の間で、巫女が器から器へ水を移す。水が光の弧を描く。急がない。こぼさない。それだけのことが、これほど難しい。",
+   commands:["そそぐ","まつ","みる"],
+   upright:"バランスは動きの中にある。",
+   reversed:"どちらかに注ぎすぎている。"},
+  {id:15,name:"悪魔",nameEn:"THE DEVIL",roman:"XV",
+   image:"https://assets.st-note.com/img/1779449745-PT8KqHSklBcAXVvYRmswQhtI.png",
+   desc:"「縄は 自分で結んだものだった。」\n\n融合した埴輪の怪物が古墳の闇に立つ。赤く光る目。足元に縄で繋がれたふたつの影。縄はゆるい。解こうと思えば解ける。しかし誰も解こうとしない。",
+   commands:["にげる","たたかう","みつめる"],
+   upright:"何に縛られているか、まず見ろ。",
+   reversed:"縄に気づいていない。あるいは気づきたくない。"},
+  {id:16,name:"塔",nameEn:"THE TOWER",roman:"XVI",
+   image:"https://assets.st-note.com/img/1779449769-OlzSveLntGAYgx9sycjF2HW3.png",
+   desc:"「古墳が ついに口を開いた。」\n\n雷が古墳の頂を砕く。石が、埴輪が、人が、空へ飛ぶ。副葬品が星のように散る。壊れたのではない。開いたのだ。",
+   commands:["にげる","みあげる","かくれる"],
+   upright:"崩壊は解放だ。しがみつくな。",
+   reversed:"崩れるべきものが、まだ崩れていない。"},
+  {id:17,name:"星",nameEn:"THE STAR",roman:"XVII",
+   image:"https://assets.st-note.com/img/1779449793-zmQsKfV2HrXEl5YgS7ODxebt.png",
+   desc:"「星が古墳を やさしく照らしていた。」\n\n古墳の泉のほとりで、巫女がふたつの土器から水を注ぐ。大きな星が空に輝き、その光が水面に映る。埴輪たちが円を作り、全員が空を見上げている。嵐の後の静けさ。",
+   commands:["みあげる","ねがう","そそぐ"],
+   upright:"希望は消えていなかった。",
+   reversed:"星は出ているのに、下を向いている。"},
+  {id:18,name:"月",nameEn:"THE MOON",roman:"XVIII",
+   image:"https://assets.st-note.com/img/1779449815-f8m60RrQn2ZUVhxWsHvYujg7.png",
+   desc:"「どちらの道も 古墳へ続いていた。」\n\n満月の下、ふたつの古墳の間に道が伸びる。片側に狐、片側に犬。どちらへ進んでも古墳に着く。霧の中で埴輪の顔が光る。迷うことが、この道の正しい歩き方だ。",
+   commands:["すすむ","もどる","まつ"],
+   upright:"不安は道しるべだ。感じながら進め。",
+   reversed:"霧の中で完全に方向を失っている。"},
+  {id:19,name:"太陽",nameEn:"THE SUN",roman:"XIX",
+   image:"https://assets.st-note.com/img/1779449836-Sz2PAgMKGc4QxNI1vTs3wRJy.png",
+   desc:"「埴輪たちが はじめて笑った日。」\n\n古墳の斜面を子どもが駆け下りてくる。ひまわりが咲き、埴輪たちが頂上で両手を上げている。太陽が真上にある。影がない。こんなに明るい古墳を、誰も見たことがなかった。",
+   commands:["はしる","よろこぶ","みあげる"],
+   upright:"今は素直に喜んでいい。",
+   reversed:"光が眩しすぎて、目を閉じている。"},
+  {id:20,name:"審判",nameEn:"JUDGEMENT",roman:"XX",
+   image:"https://assets.st-note.com/img/1779449928-bq67H8v9BCVDenkEUlh5MRZa.png",
+   desc:"「古墳が 眠りから覚めるとき。」\n\n法螺貝の音が夜明けの空に響く。古墳の土が割れ、埴輪たちが地中から腕を伸ばす。生きている者たちが膝をつく。呼ばれている。応えるかどうかは、自分で決める。",
+   commands:["こたえる","ひざまずく","みあげる"],
+   upright:"呼び声が聞こえている。立ち上がれ。",
+   reversed:"呼ばれているのに、聞こえないふりをしている。"},
+  {id:21,name:"世界",nameEn:"THE WORLD",roman:"XXI",
+   image:"https://assets.st-note.com/img/1779449906-sHP60KT8ANoi4w1eCQEYxbFV.png",
+   desc:"「古墳の旅が 終わり、また始まる。」\n\n花輪の中で巫女が踊る。古墳の頂、日の出の光の中で。22体の埴輪と人間たちが円を作り、全員が空を見上げている。終わった。しかし扉はまだ開いている。",
+   commands:["おどる","みまわす","きざむ"],
+   upright:"ひとつの旅が完成した。",
+   reversed:"終わりを認めず、まだ歩き続けている。"},
+];
+
+// ---- 星空 ----
+(function(){
+  const canvas=document.getElementById('stars');
+  const ctx=canvas.getContext('2d');
+  let stars=[];
+  function resize(){
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
+    stars=Array.from({length:120},()=>({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*1.2+0.2,
+      a:Math.random()*Math.PI*2,
+      speed:Math.random()*.005+.002
+    }));
+  }
+  resize();
+  window.addEventListener('resize',resize);
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s=>{
+      s.a+=s.speed;
+      const op=(Math.sin(s.a)+1)/2*.7+.1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(210,185,130,${op})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ---- ナビ ----
+const pages={home:document.getElementById('page-home'),oracle:document.getElementById('page-oracle'),gallery:document.getElementById('page-gallery')};
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    Object.values(pages).forEach(p=>{p.classList.remove('show');p.style.display='none';});
+    const p=pages[btn.dataset.page];
+    p.style.display='block';
+    setTimeout(()=>p.classList.add('show'),10);
+  });
+});
+document.getElementById('btn-start').addEventListener('click',()=>{
+  document.querySelector('[data-page="oracle"]').click();
+});
+
+// ---- ギャラリー生成 ----
+const grid=document.getElementById('gallery-grid');
+CARDS.forEach(card=>{
+  const el=document.createElement('div');
+  el.className='gallery-card';
+  el.innerHTML=`
+    <div class="gallery-card-img">
+      <img src="${card.image}" alt="${card.name}" loading="lazy">
+      <div class="gallery-card-img-overlay"><div class="gallery-card-roman">${card.roman}</div></div>
+    </div>
+    <div class="gallery-card-text">
+      <div class="gallery-card-name">${card.name}</div>
+      <div class="gallery-card-en">${card.nameEn}</div>
+    </div>`;
+  el.addEventListener('click',()=>openModal(card,false));
+  grid.appendChild(el);
+});
+
+// ---- オラクル ----
+let drawing=false;
+const history=[];
+document.getElementById('draw-btn').addEventListener('click',()=>{
+  if(drawing)return;
+  drawing=true;
+  const label=document.getElementById('draw-label');
+  label.textContent='古墳が語る…';
+  label.classList.add('drawing');
+  setTimeout(()=>{
+    const card=CARDS[Math.floor(Math.random()*CARDS.length)];
+    const rev=Math.random()<.35;
+    history.unshift({card,reversed:rev,time:new Date()});
+    if(history.length>10)history.pop();
+    renderHistory();
+    openModal(card,rev);
+    label.textContent='▶ タップで引く';
+    label.classList.remove('drawing');
+    drawing=false;
+  },800);
+});
+
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  const sec=document.getElementById('history-section');
+  if(history.length===0){sec.style.display='none';return;}
+  sec.style.display='block';
+  list.innerHTML='';
+  history.forEach((h,i)=>{
+    const el=document.createElement('div');
+    el.className='history-item'+(i===0?' latest':'');
+    const t=h.time.toLocaleTimeString('ja-JP',{hour:'2-digit',minute:'2-digit'});
+    el.innerHTML=`
+      <img class="history-thumb${h.reversed?' rev':''}" src="${h.card.image}" alt="">
+      <div>
+        <div class="history-name">${h.card.name}</div>
+        <div class="history-pos ${h.reversed?'reversed':'upright'}">${h.reversed?'REVERSED':'UPRIGHT'}</div>
+      </div>
+      <div class="history-time">${t}</div>`;
+    el.addEventListener('click',()=>openModal(h.card,h.reversed));
+    list.appendChild(el);
+  });
+}
+
+// ---- モーダル ----
+let typeTimer=null;
+function openModal(card,reversed){
+  const overlay=document.getElementById('modal-overlay');
+  const img=document.getElementById('modal-img');
+  const roman=document.getElementById('modal-roman');
+  const badge=document.getElementById('modal-rev-badge');
+  const nameJa=document.getElementById('modal-name-ja');
+  const nameEn=document.getElementById('modal-name-en');
+  const desc=document.getElementById('modal-desc');
+  const commands=document.getElementById('modal-commands');
+  const cmdList=document.getElementById('modal-cmd-list');
+  const oracle=document.getElementById('modal-oracle');
+  const oLabel=document.getElementById('modal-oracle-label');
+  const oText=document.getElementById('modal-oracle-text');
+
+  // リセット
+  if(typeTimer)clearInterval(typeTimer);
+  img.className='modal-card-img';
+  desc.innerHTML='';
+  commands.style.display='none';
+  oracle.style.display='none';
+
+  // セット
+  img.src=card.image;
+  roman.textContent=card.roman;
+  nameJa.textContent=card.name;
+  nameEn.textContent=card.nameEn;
+  badge.style.display=reversed?'block':'none';
+
+  overlay.classList.add('show');
+  document.body.style.overflow='hidden';
+
+  // フリップ
+  setTimeout(()=>{
+    img.className='modal-card-img'+(reversed?' reversed-img':' flipped');
+  },200);
+
+  // タイプライター
+  setTimeout(()=>{
+    const text=card.desc;
+    let i=0;
+    typeTimer=setInterval(()=>{
+      i++;
+      desc.innerHTML=text.slice(0,i).replace(/\n/g,'<br>')+
+        (i<text.length?'<span class="cursor">█</span>':'');
+      if(i>=text.length){
+        clearInterval(typeTimer);
+        // コマンド表示
+        setTimeout(()=>{
+          cmdList.innerHTML=card.commands.map(c=>`<div class="modal-cmd">▶ ${c}</div>`).join('');
+          commands.style.display='block';
+          // オラクル表示
+          setTimeout(()=>{
+            oracle.className='modal-oracle '+(reversed?'reversed-oracle':'upright');
+            oLabel.className='modal-oracle-label '+(reversed?'reversed-oracle':'upright');
+            oLabel.textContent=reversed?'REVERSED':'UPRIGHT';
+            oText.className='modal-oracle-text '+(reversed?'reversed-oracle':'upright');
+            oracle.style.display='block';
+            const oStr=reversed?card.reversed:card.upright;
+            let j=0;
+            typeTimer=setInterval(()=>{
+              j++;
+              oText.textContent=oStr.slice(0,j);
+              if(j>=oStr.length)clearInterval(typeTimer);
+            },35);
+          },400);
+        },600);
+      }
+    },25);
+  },900);
+}
+
+function closeModal(){
+  if(typeTimer)clearInterval(typeTimer);
+  document.getElementById('modal-overlay').classList.remove('show');
+  document.body.style.overflow='';
+}
+document.getElementById('modal-close').addEventListener('click',closeModal);
+document.getElementById('modal-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('modal-overlay'))closeModal();
+});
+</script>
+</body>
+</html>
